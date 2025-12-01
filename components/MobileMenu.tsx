@@ -60,14 +60,14 @@ export default function MobileMenu() {
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 z-[45] bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => setIsOpen(false)}
         />
       )}
 
       {/* Menu Drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 flex flex-col border-r backdrop-blur-md shadow-lg transition-transform duration-300 lg:hidden ${
+        className={`fixed inset-y-0 left-0 z-[50] w-64 flex flex-col border-r backdrop-blur-md shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{

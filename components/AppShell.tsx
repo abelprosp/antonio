@@ -19,7 +19,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
   return (
     <div className="min-h-screen">
       <header
-        className="relative z-40 border-b backdrop-blur-md shadow-lg sm:fixed sm:inset-x-0 sm:top-0"
+        className="relative z-30 border-b backdrop-blur-md shadow-lg sm:fixed sm:inset-x-0 sm:top-0"
         style={{ background: "var(--header-bg)", borderColor: "var(--header-border)" }}
       >
         <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-6">
