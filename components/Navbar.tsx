@@ -34,20 +34,20 @@ export default function Navbar() {
 
   return (
     <nav className="flex items-center justify-center w-full">
-      <ul className="flex items-center gap-1 sm:gap-2 flex-wrap justify-center">
+      <ul className="flex items-center gap-2 sm:gap-3">
         {links.map((link, idx) => {
           const isActive = pathname === link.href;
           return (
             <li key={link.href} className="flex items-center">
               {idx > 0 && (
                 <span
-                  className="mx-0.5 sm:mx-1 h-4 w-px bg-white/10 dark:bg-white/5"
+                  className="mx-1 h-4 w-px bg-white/10 dark:bg-white/5"
                   aria-hidden="true"
                 />
               )}
               <Link
                 href={link.href}
-                className={`relative inline-flex items-center justify-center rounded-lg border px-2 py-1.5 text-xs sm:text-sm font-display font-semibold transition-all duration-200 sm:px-3 sm:py-2 lg:px-4 lg:text-base ${
+                className={`relative inline-flex items-center justify-center rounded-lg border px-3 py-2 text-sm font-display font-semibold transition-all duration-200 sm:px-4 sm:text-base ${
                   isActive
                     ? "border-cyan-300/60 bg-white/10 text-[var(--header-text)] shadow-[0_4px_12px_rgba(8,47,73,0.25)]"
                     : "border-transparent text-[var(--nav-text)]/70 hover:border-white/20 hover:bg-white/5 hover:text-[var(--header-text)]"

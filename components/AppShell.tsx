@@ -2,6 +2,7 @@
 
 import { usePathname } from "next/navigation";
 import Navbar from "./Navbar";
+import MobileMenu from "./MobileMenu";
 import RoleIndicator from "./RoleIndicator";
 import ThemeToggle from "./ThemeToggle";
 import Image from "next/image";
@@ -40,9 +41,14 @@ export default function AppShell({ children }: { children: ReactNode }) {
               <span className="sm:hidden">Visor</span>
             </div>
 
-            {/* Menu central - responsivo e simétrico */}
-            <div className="flex flex-1 items-center justify-center min-w-0 px-1 sm:px-2">
+            {/* Menu central - apenas desktop */}
+            <div className="hidden flex-1 items-center justify-center min-w-0 px-1 sm:px-2 lg:flex">
               <Navbar />
+            </div>
+
+            {/* Menu hamburger - apenas mobile */}
+            <div className="lg:hidden">
+              <MobileMenu />
             </div>
 
             {/* Controles direito - simétrico */}
