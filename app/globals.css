@@ -144,3 +144,60 @@ a {
     min-height: auto;
   }
 }
+
+/* Animações para fundo animado da página de login */
+@keyframes float {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(20px, -30px) scale(1.2);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-15px, -50px) scale(0.8);
+    opacity: 0.4;
+  }
+  75% {
+    transform: translate(30px, -20px) scale(1.1);
+    opacity: 0.5;
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.6;
+  }
+}
+
+/* Estilo específico para página de login */
+.login-page {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0b1224 0%, #0f172a 40%, #0b1721 72%, #0f172a 100%);
+  overflow: hidden;
+  z-index: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.login-page .login-content {
+  position: relative;
+  z-index: 10;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+}

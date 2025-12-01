@@ -1,10 +1,11 @@
 "use client";
 
 import { useRouter, useSearchParams } from "next/navigation";
-import { FormEvent, useState, Suspense } from "react";
+import { FormEvent, useState, Suspense, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { supabaseBrowser } from "../../utils/supabaseBrowser";
+import AnimatedBackground from "../../components/AnimatedBackground";
 
 // Lista de URLs permitidas para redirecionamento (prevenção de open redirect)
 const ALLOWED_REDIRECT_PATHS = ["/dashboard", "/bluemilk", "/hm", "/settings"];
@@ -73,7 +74,7 @@ function LoginForm() {
   };
 
   return (
-    <section className="mx-auto flex min-h-[70vh] max-w-lg flex-col justify-center gap-6 px-4">
+    <section className="mx-auto flex min-h-0 max-w-lg flex-col justify-center gap-6 px-4 py-8">
       <div className="flex justify-center">
         <Image
           src="/assets/logo.png"
@@ -144,22 +145,43 @@ function LoginForm() {
 }
 
 export default function LoginPage() {
+  useEffect(() => {
+    // Aplicar estilos ao body quando a página de login carregar
+    document.body.style.background = "transparent";
+    document.body.style.overflow = "hidden";
+    document.body.style.margin = "0";
+    document.body.style.padding = "0";
+
+    // Limpar estilos quando sair da página
+    return () => {
+      document.body.style.background = "";
+      document.body.style.overflow = "";
+      document.body.style.margin = "";
+      document.body.style.padding = "";
+    };
+  }, []);
+
   return (
-    <Suspense fallback={
-      <section className="mx-auto flex min-h-[70vh] max-w-lg flex-col justify-center gap-6 px-4">
-        <div className="flex justify-center">
-          <Image
-            src="/assets/logo.png"
-            alt="Logo"
-            width={200}
-            height={200}
-            className="w-auto h-auto max-w-[300px] max-h-[300px]"
-            priority
-          />
-        </div>
-      </section>
-    }>
-      <LoginForm />
-    </Suspense>
+    <div className="login-page">
+      <AnimatedBackground />
+      <div className="login-content">
+        <Suspense fallback={
+          <section className="mx-auto flex min-h-[70vh] max-w-lg flex-col justify-center gap-6 px-4">
+            <div className="flex justify-center">
+              <Image
+                src="/assets/logo.png"
+                alt="Logo"
+                width={200}
+                height={200}
+                className="w-auto h-auto max-w-[300px] max-h-[300px]"
+                priority
+              />
+            </div>
+          </section>
+        }>
+          <LoginForm />
+        </Suspense>
+      </div>
+    </div>
   );
 }
