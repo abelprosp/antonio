@@ -2,7 +2,6 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { FormEvent, useState, Suspense, useEffect } from "react";
-import Link from "next/link";
 import Image from "next/image";
 import { supabaseBrowser } from "../../utils/supabaseBrowser";
 import AnimatedBackground from "../../components/AnimatedBackground";
@@ -132,12 +131,6 @@ function LoginForm() {
           >
             {loading ? "Entrando..." : "Entrar"}
           </button>
-          <Link
-            href="/"
-            className="text-sm font-semibold text-gray-700 dark:text-slate-200 transition hover:text-gray-900 dark:hover:text-white"
-          >
-            Voltar
-          </Link>
         </div>
       </form>
     </section>
