@@ -60,7 +60,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
         </div>
       </header>
 
-      <main className="min-h-screen pt-4 sm:pt-20">{children}</main>
+      <main className="min-h-screen pt-0 sm:pt-16">{children}</main>
     </div>
   );
 }
