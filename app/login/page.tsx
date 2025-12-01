@@ -42,21 +42,34 @@ function LoginForm() {
       return;
     }
 
-    const supabase = supabaseBrowser();
-    const { error: signInError } = await supabase.auth.signInWithPassword({
-      email: email.trim().toLowerCase(),
-      password,
-    });
+    try {
+      const supabase = supabaseBrowser();
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim().toLowerCase(),
+        password,
+      });
 
-    setLoading(false);
+      setLoading(false);
 
-    if (signInError) {
-      setError(signInError.message);
-      return;
+      if (signInError) {
+        setError(signInError.message);
+        return;
+      }
+
+      // força navegação completa para garantir sessão aplicada no middleware
+      window.location.href = redirectTo;
+    } catch (err) {
+      setLoading(false);
+      if (err instanceof Error) {
+        if (err.message.includes("environment variables")) {
+          setError("Erro de configuração: Variáveis do Supabase não encontradas. Verifique o arquivo .env.local e reinicie o servidor.");
+        } else {
+          setError(err.message);
+        }
+      } else {
+        setError("Erro ao conectar com o servidor. Tente novamente.");
+      }
     }
-
-    // força navegação completa para garantir sessão aplicada no middleware
-    window.location.href = redirectTo;
   };
 
   return (
