@@ -1,4 +1,32 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { getIframeUrl } from "../../utils/iframeUrls";
+
 export default function HMPage() {
+  const [iframeUrl, setIframeUrl] = useState("");
+
+  useEffect(() => {
+    setIframeUrl(getIframeUrl("hm"));
+    
+    const handleStorageChange = () => {
+      setIframeUrl(getIframeUrl("hm"));
+    };
+    window.addEventListener("storage", handleStorageChange);
+    
+    const interval = setInterval(() => {
+      const current = getIframeUrl("hm");
+      if (current !== iframeUrl) {
+        setIframeUrl(current);
+      }
+    }, 1000);
+
+    return () => {
+      window.removeEventListener("storage", handleStorageChange);
+      clearInterval(interval);
+    };
+  }, [iframeUrl]);
+
   return (
     <section className="page-hero full-bleed">
       <div className="page-hero-inner mx-auto max-w-5xl space-y-4 px-4">
@@ -9,7 +37,18 @@ export default function HMPage() {
         </div>
 
         <div className="iframe-container bg-white/92">
-          {/* Cliente irá inserir aqui o iframe da IA */}
+          {iframeUrl ? (
+            <iframe
+              src={iframeUrl}
+              className="w-full h-full min-h-[600px] border-0 rounded-xl"
+              title="IA HM"
+              allow="fullscreen"
+            />
+          ) : (
+            <div className="flex h-[600px] items-center justify-center text-gray-400">
+              <p>Configure a URL do iframe nas Configurações</p>
+            </div>
+          )}
         </div>
       </div>
     </section>

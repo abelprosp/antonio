@@ -12,7 +12,16 @@ export function useUserRole() {
   useEffect(() => {
     async function fetchRole() {
       try {
-        const supabase = supabaseBrowser();
+        let supabase;
+        try {
+          supabase = supabaseBrowser();
+        } catch (configError) {
+          console.error("Error fetching user role: Supabase not configured", configError);
+          setRole(null);
+          setLoading(false);
+          return;
+        }
+
         const {
           data: { user },
         } = await supabase.auth.getUser();
