@@ -104,6 +104,17 @@ a {
   z-index: 1;
 }
 
+/* Garantir que o menu mobile apareça acima de tudo */
+@media (max-width: 1023px) {
+  [class*="z-\[9999\]"] {
+    z-index: 9999 !important;
+  }
+  
+  [class*="z-\[9998\]"] {
+    z-index: 9998 !important;
+  }
+}
+
 .full-bleed {
   width: 100vw;
   position: relative;

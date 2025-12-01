@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useUserRole, type UserRole } from "../utils/useUserRole";
@@ -17,8 +18,13 @@ const allLinks: Array<{
 
 export default function MobileMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const { role, loading } = useUserRole();
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const links = loading
     ? []
@@ -31,48 +37,27 @@ export default function MobileMenu() {
     return null;
   }
 
-  return (
+  const menuContent = (
     <>
-      {/* Botão Hamburger - apenas mobile */}
-      <button
-        type="button"
-        onClick={() => setIsOpen(!isOpen)}
-        className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[var(--header-text)] transition hover:bg-white/10"
-        aria-label="Abrir menu"
-        aria-expanded={isOpen}
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          className="h-6 w-6"
-        >
-          {isOpen ? (
-            <path d="M6 18L18 6M6 6l12 12" />
-          ) : (
-            <path d="M4 6h16M4 12h16M4 18h16" />
-          )}
-        </svg>
-      </button>
-
       {/* Overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 z-[45] bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 bg-black/50 backdrop-blur-sm lg:hidden"
           onClick={() => setIsOpen(false)}
+          style={{ position: "fixed", zIndex: 9998 }}
         />
       )}
 
       {/* Menu Drawer */}
       <aside
-        className={`fixed inset-y-0 left-0 z-[50] w-64 flex flex-col border-r backdrop-blur-md shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-y-0 left-0 w-64 flex flex-col border-r backdrop-blur-md shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}
         style={{
           background: "var(--header-bg)",
           borderColor: "var(--header-border)",
+          position: "fixed",
+          zIndex: 9999,
         }}
       >
         <div
@@ -128,6 +113,37 @@ export default function MobileMenu() {
           </ul>
         </nav>
       </aside>
+    </>
+  );
+
+  return (
+    <>
+      {/* Botão Hamburger - apenas mobile */}
+      <button
+        type="button"
+        onClick={() => setIsOpen(!isOpen)}
+        className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-[var(--header-text)] transition hover:bg-white/10"
+        aria-label="Abrir menu"
+        aria-expanded={isOpen}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          className="h-6 w-6"
+        >
+          {isOpen ? (
+            <path d="M6 18L18 6M6 6l12 12" />
+          ) : (
+            <path d="M4 6h16M4 12h16M4 18h16" />
+          )}
+        </svg>
+      </button>
+
+      {/* Renderizar menu e overlay em portal no body para garantir z-index correto */}
+      {mounted && typeof document !== "undefined" && createPortal(menuContent, document.body)}
     </>
   );
 }
