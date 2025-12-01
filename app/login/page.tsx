@@ -73,7 +73,7 @@ function LoginForm() {
   };
 
   return (
-    <section className="mx-auto flex min-h-0 max-w-lg flex-col justify-center gap-6 px-4 py-8">
+    <section className="mx-auto flex min-h-0 max-w-lg flex-col justify-center gap-6 px-4 py-8 overflow-visible">
       <div className="flex justify-center">
         <Image
           src="/assets/logo.png"
