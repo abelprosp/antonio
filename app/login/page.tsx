@@ -153,14 +153,6 @@ function LoginForm() {
       >
         {/* Efeito de scanline no formulário */}
         <ScanLine />
-        
-        {/* Título com efeito de glitch se houver erro */}
-        <GlitchEffect active={!!error}>
-          <h1 className="text-2xl font-display font-semibold text-center text-white mb-6 typing-effect">
-            Entrar
-            <span className="cursor-blink">|</span>
-          </h1>
-        </GlitchEffect>
 
         {/* Campo de email */}
         <div className="space-y-2 relative">
