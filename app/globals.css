@@ -78,14 +78,9 @@ a {
 
 .page-hero {
   position: relative;
-  background: url("/assets/fundo.png") center/cover no-repeat;
   padding: 80px 0 110px;
   color: #fff;
   min-height: calc(100vh - 72px);
-}
-
-.theme-light .page-hero {
-  background: url("/assets/fundo1.png") center/cover no-repeat;
 }
 
 .page-hero::before {
@@ -197,8 +192,9 @@ a {
   width: 100%;
   min-height: 100%;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   margin: 0;
-  padding: 2rem 1rem;
+  padding: 1rem 1rem;
+  padding-top: 2rem;
 }

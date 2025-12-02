@@ -73,14 +73,14 @@ function LoginForm() {
   };
 
   return (
-    <section className="mx-auto flex min-h-0 max-w-lg flex-col justify-center gap-6 px-4 py-8 overflow-visible">
-      <div className="flex justify-center">
+    <section className="mx-auto flex min-h-0 max-w-lg flex-col justify-start gap-4 px-4 pt-4 pb-6 overflow-visible">
+      <div className="flex justify-center -mb-1">
         <Image
           src="/assets/logo.png"
           alt="Logo"
           width={200}
           height={200}
-          className="w-auto h-auto max-w-[300px] max-h-[300px]"
+          className="w-auto h-auto max-w-[300px] max-h-[300px] object-contain"
           priority
         />
       </div>
@@ -199,14 +199,14 @@ export default function LoginPage() {
       <AnimatedBackground />
       <div className="login-content">
         <Suspense fallback={
-          <section className="mx-auto flex min-h-[70vh] max-w-lg flex-col justify-center gap-6 px-4">
-            <div className="flex justify-center">
+          <section className="mx-auto flex min-h-0 max-w-lg flex-col justify-start gap-1 px-4 pt-4">
+            <div className="flex justify-center -mb-1">
               <Image
                 src="/assets/logo.png"
                 alt="Logo"
                 width={200}
                 height={200}
-                className="w-auto h-auto max-w-[300px] max-h-[300px]"
+                className="w-auto h-auto max-w-[300px] max-h-[300px] object-contain"
                 priority
               />
             </div>
