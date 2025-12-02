@@ -2,29 +2,57 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 
+/**
+ * Tipo que representa os roles disponíveis
+ */
 type Role = "admin" | "bluemilk" | "hm";
 
+/**
+ * Tipo que representa uma linha de usuário na tabela
+ */
 type UserRow = {
-  id: string;
-  email: string;
-  name: string | null;
-  role: Role | null;
+  id: string; // ID único do usuário
+  email: string; // Email do usuário
+  name: string | null; // Nome do usuário (pode ser null)
+  role: Role | null; // Role do usuário (pode ser null)
 };
 
+/**
+ * Array com os roles disponíveis e seus labels
+ */
 const roles: { value: Role; label: string }[] = [
   { value: "admin", label: "Admin" },
   { value: "bluemilk", label: "BlueMilk" },
   { value: "hm", label: "HM" },
 ];
 
+/**
+ * Componente AdminUsersManager - Gerenciador de usuários para administradores
+ * 
+ * Este componente permite que administradores:
+ * - Visualizem todos os usuários do sistema
+ * - Criem novos usuários
+ * - Atualizem usuários existentes (nome, role, senha)
+ * 
+ * ⚠️ ATENÇÃO: Este componente é acessível apenas para usuários com role "admin".
+ * 
+ * @returns Componente de gerenciamento de usuários
+ */
 export default function AdminUsersManager() {
+  // Estado da lista de usuários
   const [users, setUsers] = useState<UserRow[]>([]);
+  // Estado de carregamento da lista
   const [loadingUsers, setLoadingUsers] = useState(false);
+  // Estado do formulário de criação (idle, loading, success, error)
   const [createStatus, setCreateStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  // Estado do formulário de atualização
   const [updateStatus, setUpdateStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  // Mensagem de feedback para criação
   const [createMessage, setCreateMessage] = useState<string | null>(null);
+  // Mensagem de feedback para atualização
   const [updateMessage, setUpdateMessage] = useState<string | null>(null);
 
+  // Estado do formulário de criação
   const [createForm, setCreateForm] = useState({
     email: "",
     password: "",
@@ -32,18 +60,24 @@ export default function AdminUsersManager() {
     role: "hm" as Role,
   });
 
+  // ID do usuário selecionado para edição
   const [selectedId, setSelectedId] = useState<string | null>(null);
+  // Usuário selecionado (calculado a partir do selectedId)
   const selectedUser = useMemo(
     () => users.find((u) => u.id === selectedId),
     [users, selectedId],
   );
 
+  // Estado do formulário de atualização
   const [updateForm, setUpdateForm] = useState({
     name: "",
     role: "hm" as Role,
     password: "",
   });
 
+  /**
+   * Função que busca a lista de usuários da API
+   */
   const fetchUsers = async () => {
     setLoadingUsers(true);
     const res = await fetch("/api/admin/users", { method: "GET" });
@@ -54,33 +88,49 @@ export default function AdminUsersManager() {
     setLoadingUsers(false);
   };
 
+  /**
+   * Efeito que busca os usuários ao montar o componente
+   */
   useEffect(() => {
     void fetchUsers();
   }, []);
 
+  /**
+   * Efeito que atualiza o formulário de edição quando um usuário é selecionado
+   */
   useEffect(() => {
     if (selectedUser) {
       setUpdateForm({
         name: selectedUser.name ?? "",
         role: (selectedUser.role as Role) ?? "hm",
-        password: "",
+        password: "", // Sempre limpa a senha ao selecionar
       });
     }
   }, [selectedUser]);
 
+  /**
+   * Handler para criar um novo usuário
+   * 
+   * @param e - Evento do formulário
+   */
   const handleCreate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setCreateStatus("loading");
     setCreateMessage(null);
+    
+    // Faz requisição POST para criar usuário
     const res = await fetch("/api/admin/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(createForm),
     });
+    
     if (res.ok) {
       setCreateStatus("success");
       setCreateMessage("Usuário criado.");
+      // Limpa o formulário
       setCreateForm({ email: "", password: "", name: "", role: "hm" });
+      // Recarrega a lista de usuários
       void fetchUsers();
     } else {
       const data = (await res.json().catch(() => ({}))) as { error?: string };
@@ -89,20 +139,31 @@ export default function AdminUsersManager() {
     }
   };
 
+  /**
+   * Handler para atualizar um usuário existente
+   * 
+   * @param e - Evento do formulário
+   */
   const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!selectedId) return;
+    if (!selectedId) return; // Se não houver usuário selecionado, não faz nada
+    
     setUpdateStatus("loading");
     setUpdateMessage(null);
+    
+    // Faz requisição PUT para atualizar usuário
     const res = await fetch("/api/admin/users", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id: selectedId, ...updateForm }),
     });
+    
     if (res.ok) {
       setUpdateStatus("success");
       setUpdateMessage("Usuário atualizado.");
+      // Limpa apenas a senha do formulário (mantém nome e role)
       setUpdateForm((prev) => ({ ...prev, password: "" }));
+      // Recarrega a lista de usuários
       void fetchUsers();
     } else {
       const data = (await res.json().catch(() => ({}))) as { error?: string };
@@ -113,6 +174,7 @@ export default function AdminUsersManager() {
 
   return (
     <section className="space-y-4 rounded-2xl border border-white/10 bg-white/5 p-6 shadow-lg shadow-slate-900/20">
+      {/* Cabeçalho da seção */}
       <div className="space-y-1">
         <h2 className="text-lg font-semibold text-foreground">Gerenciar usuários</h2>
         <p className="text-muted text-sm">
@@ -120,10 +182,13 @@ export default function AdminUsersManager() {
         </p>
       </div>
 
+      {/* Grid com formulários de criar e atualizar */}
       <div className="grid gap-6 lg:grid-cols-2">
+        {/* Formulário de criação */}
         <div className="space-y-3">
           <h3 className="text-sm font-semibold text-foreground">Criar novo usuário</h3>
           <form onSubmit={handleCreate} className="space-y-3">
+            {/* Campo de nome */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground" htmlFor="create-name">
                 Nome
@@ -142,6 +207,8 @@ export default function AdminUsersManager() {
                 placeholder="Nome"
               />
             </div>
+            
+            {/* Campo de role */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground" htmlFor="create-role">
                 Papel
@@ -164,6 +231,8 @@ export default function AdminUsersManager() {
                 ))}
               </select>
             </div>
+            
+            {/* Campo de email */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground" htmlFor="create-email">
                 E-mail
@@ -183,6 +252,8 @@ export default function AdminUsersManager() {
                 placeholder="usuario@dominio.com"
               />
             </div>
+            
+            {/* Campo de senha */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground" htmlFor="create-password">
                 Senha
@@ -202,6 +273,8 @@ export default function AdminUsersManager() {
                 placeholder="Senha temporária"
               />
             </div>
+            
+            {/* Botão de submit e mensagem de feedback */}
             <div className="flex items-center gap-3 text-sm">
               <button
                 type="submit"
@@ -223,9 +296,11 @@ export default function AdminUsersManager() {
           </form>
         </div>
 
+        {/* Formulário de atualização */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold text-foreground">Atualizar usuário</h3>
+            {/* Botão para recarregar a lista */}
             <button
               type="button"
               onClick={() => void fetchUsers()}
@@ -235,6 +310,8 @@ export default function AdminUsersManager() {
               {loadingUsers ? "Atualizando..." : "Recarregar lista"}
             </button>
           </div>
+          
+          {/* Select para escolher usuário */}
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground" htmlFor="select-user">
               Selecionar usuário
@@ -259,8 +336,10 @@ export default function AdminUsersManager() {
             </select>
           </div>
 
+          {/* Formulário de atualização (só aparece se houver usuário selecionado) */}
           {selectedUser ? (
             <form onSubmit={handleUpdate} className="space-y-3">
+              {/* Campo de nome */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground" htmlFor="update-name">
                   Nome
@@ -278,6 +357,8 @@ export default function AdminUsersManager() {
                   }}
                 />
               </div>
+              
+              {/* Campo de role */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground" htmlFor="update-role">
                   Papel
@@ -300,6 +381,8 @@ export default function AdminUsersManager() {
                   ))}
                 </select>
               </div>
+              
+              {/* Campo de senha (opcional) */}
               <div className="space-y-2">
                 <label className="text-sm font-medium text-foreground" htmlFor="update-password">
                   Nova senha (opcional)
@@ -318,6 +401,8 @@ export default function AdminUsersManager() {
                   placeholder="Deixe em branco para manter"
                 />
               </div>
+              
+              {/* Botão de submit e mensagem de feedback */}
               <div className="flex items-center gap-3 text-sm">
                 <button
                   type="submit"
@@ -343,10 +428,12 @@ export default function AdminUsersManager() {
         </div>
       </div>
 
+      {/* Tabela com lista de usuários existentes */}
       <div className="space-y-2">
         <h3 className="text-sm font-semibold text-foreground">Usuários existentes</h3>
         <div className="overflow-auto rounded-xl border border-white/10 bg-white/5">
           <table className="min-w-full text-sm">
+            {/* Cabeçalho da tabela */}
             <thead className="border-b border-white/10 text-left text-foreground/80">
               <tr>
                 <th className="px-4 py-3">Nome</th>
@@ -354,12 +441,13 @@ export default function AdminUsersManager() {
                 <th className="px-4 py-3">Papel</th>
               </tr>
             </thead>
+            {/* Corpo da tabela */}
             <tbody>
               {users.map((u) => (
                 <tr
                   key={u.id}
                   className="border-b border-white/5 transition hover:bg-white/5"
-                  onClick={() => setSelectedId(u.id)}
+                  onClick={() => setSelectedId(u.id)} // Seleciona usuário ao clicar na linha
                 >
                   <td className="px-4 py-3 font-semibold text-foreground">
                     {u.name ?? "—"}
@@ -368,6 +456,7 @@ export default function AdminUsersManager() {
                   <td className="px-4 py-3 text-foreground/80">{u.role ?? "—"}</td>
                 </tr>
               ))}
+              {/* Mensagem quando não houver usuários */}
               {users.length === 0 && (
                 <tr>
                   <td className="px-4 py-3 text-muted" colSpan={3}>

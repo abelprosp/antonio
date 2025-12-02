@@ -2,34 +2,71 @@
 
 import { useEffect, useState } from "react";
 
+/**
+ * Tipo que representa o tema disponível
+ */
 type Theme = "dark" | "light";
 
+/**
+ * Nome do cookie onde o tema é armazenado
+ */
 const THEME_COOKIE = "theme";
 
+/**
+ * Função para obter o tema armazenado no cookie
+ * 
+ * @returns O tema armazenado ou null se não existir
+ */
 const getStoredTheme = (): Theme | null => {
+  // Verifica se está no servidor (SSR)
   if (typeof document === "undefined") return null;
+  
+  // Busca o cookie do tema
   const cookie = document.cookie
     .split(";")
     .map((c) => c.trim())
     .find((c) => c.startsWith(`${THEME_COOKIE}=`));
+    
   if (cookie) {
     const value = cookie.split("=")[1] as Theme;
+    // Valida se o valor é um tema válido
     if (value === "dark" || value === "light") return value;
   }
   return null;
 };
 
+/**
+ * Função para aplicar o tema ao documento HTML
+ * 
+ * Remove as classes antigas e adiciona a nova, além de salvar no cookie
+ * 
+ * @param theme - Tema a ser aplicado
+ */
 const applyTheme = (theme: Theme) => {
+  // Remove classes antigas de tema
   document.documentElement.classList.remove("theme-dark", "theme-light");
+  // Adiciona a nova classe de tema
   document.documentElement.classList.add(`theme-${theme}`);
+  // Salva o tema no cookie com validade de 1 ano
   document.cookie = `${THEME_COOKIE}=${theme}; path=/; max-age=31536000; SameSite=Lax`;
 };
 
+/**
+ * Componente ThemeToggle - Botão para alternar entre tema claro e escuro
+ * 
+ * Permite ao usuário alternar entre modo claro e escuro.
+ * O tema é salvo em cookie para persistir entre sessões.
+ * 
+ * @returns Componente de botão para alternar tema
+ */
 export default function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>("dark");
 
+  // Efeito executado ao montar o componente
   useEffect(() => {
+    // Tenta obter o tema do cookie
     const stored = getStoredTheme();
+    // Se não houver tema salvo, usa a preferência do sistema
     const prefersDark =
       stored ??
       (window.matchMedia("(prefers-color-scheme: dark)").matches
@@ -39,6 +76,9 @@ export default function ThemeToggle() {
     applyTheme(prefersDark);
   }, []);
 
+  /**
+   * Função chamada ao clicar no botão de alternar tema
+   */
   const handleToggle = () => {
     const next = theme === "dark" ? "light" : "dark";
     setTheme(next);
@@ -58,6 +98,7 @@ export default function ThemeToggle() {
       }`}
       aria-label={`Ativar modo ${isDark ? "claro" : "escuro"}`}
     >
+      {/* Ícone de sol (modo escuro ativo) ou lua (modo claro ativo) */}
       {isDark ? (
         <svg
           xmlns="http://www.w3.org/2000/svg"

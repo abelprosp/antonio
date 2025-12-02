@@ -1,32 +1,54 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Card from "../../components/Card";
-import AdminUsersManager from "../../components/AdminUsersManager";
-import { getIframeUrls, setIframeUrls, type IframeUrls } from "../../utils/iframeUrls";
+import Card from "../../components/ui/Card";
+import AdminUsersManager from "../../components/admin/AdminUsersManager";
+import { getIframeUrls, setIframeUrls, type IframeUrls } from "../../utils/config/iframeUrls";
 
+/**
+ * Página Settings - Página de configurações
+ * 
+ * Esta página permite configurar:
+ * - Nome do sistema
+ * - URLs dos iframes para cada página (Dashboard, BlueMilk, HM)
+ * 
+ * Também inclui o componente AdminUsersManager para gerenciar usuários
+ * (apenas para administradores).
+ * 
+ * @returns Componente da página de configurações
+ */
 export default function SettingsPage() {
+  // Estado que armazena as URLs dos iframes
   const [iframeUrls, setIframeUrlsState] = useState<IframeUrls>({
     dashboard: "",
     bluemilk: "",
     hm: "",
   });
+  // Estado do nome do sistema (atualmente não é usado, mas pode ser no futuro)
   const [systemName, setSystemName] = useState("Visor Integrado");
+  // Estado que indica se as configurações foram salvas
   const [saved, setSaved] = useState(false);
 
+  /**
+   * Efeito que carrega as URLs salvas do localStorage ao montar
+   */
   useEffect(() => {
     const urls = getIframeUrls();
     setIframeUrlsState(urls);
   }, []);
 
+  /**
+   * Função que salva as configurações no localStorage
+   */
   const handleSave = () => {
-    setIframeUrls(iframeUrls);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    setIframeUrls(iframeUrls); // Salva no localStorage
+    setSaved(true); // Mostra mensagem de sucesso
+    setTimeout(() => setSaved(false), 3000); // Remove mensagem após 3 segundos
   };
 
   return (
     <div className="mx-auto max-w-5xl space-y-6 px-4 sm:px-6 lg:px-8">
+      {/* Cabeçalho da página */}
       <div className="space-y-2">
         <h1 className="text-2xl font-semibold text-foreground sm:text-3xl">
           Configurações
@@ -36,7 +58,9 @@ export default function SettingsPage() {
         </p>
       </div>
 
+      {/* Card com formulário de configurações */}
       <Card className="space-y-6">
+        {/* Campo de nome do sistema */}
         <div className="space-y-2">
           <label className="text-sm font-medium text-foreground sm:text-base">
             Nome do sistema
@@ -55,11 +79,13 @@ export default function SettingsPage() {
           />
         </div>
 
+        {/* Seção de URLs dos iframes */}
         <div className="space-y-4">
           <h3 className="text-sm font-semibold text-foreground sm:text-base">
             URLs dos Iframes
           </h3>
           <div className="grid gap-4 sm:grid-cols-1">
+            {/* Campo para URL do Dashboard */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 Dashboard
@@ -79,6 +105,8 @@ export default function SettingsPage() {
                 }}
               />
             </div>
+            
+            {/* Campo para URL do BlueMilk */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 IA BlueMilk
@@ -98,6 +126,8 @@ export default function SettingsPage() {
                 }}
               />
             </div>
+            
+            {/* Campo para URL do HM */}
             <div className="space-y-2">
               <label className="text-sm font-medium text-foreground">
                 IA HM
@@ -120,11 +150,13 @@ export default function SettingsPage() {
           </div>
         </div>
 
+        {/* Botões de ação */}
         <div className="flex flex-col-reverse items-stretch gap-3 sm:flex-row sm:items-center sm:justify-end">
+          {/* Botão de cancelar - restaura valores originais */}
           <button
             type="button"
             onClick={() => {
-              const urls = getIframeUrls();
+              const urls = getIframeUrls(); // Carrega do localStorage
               setIframeUrlsState(urls);
               setSystemName("Visor Integrado");
             }}
@@ -132,6 +164,8 @@ export default function SettingsPage() {
           >
             Cancelar
           </button>
+          
+          {/* Botão de salvar */}
           <button
             type="button"
             onClick={handleSave}
@@ -142,6 +176,7 @@ export default function SettingsPage() {
         </div>
       </Card>
 
+      {/* Componente de gerenciamento de usuários (apenas para admin) */}
       <AdminUsersManager />
     </div>
   );

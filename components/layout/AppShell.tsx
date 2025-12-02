@@ -1,34 +1,45 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
 import Navbar from "./Navbar";
 import MobileMenu from "./MobileMenu";
 import RoleIndicator from "./RoleIndicator";
-import ThemeToggle from "./ThemeToggle";
-import AnimatedBackground from "./AnimatedBackground";
+import ThemeToggle from "../ui/ThemeToggle";
+import AnimatedBackground from "../effects/AnimatedBackground";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
+/**
+ * Componente AppShell - Shell principal da aplicação
+ * 
+ * Este componente é o container principal que envolve todas as páginas.
+ * Ele fornece:
+ * - Fundo animado
+ * - Header com logo, navegação e controles
+ * - Layout responsivo
+ * 
+ * Se a rota for /login, renderiza apenas o children (sem header).
+ * 
+ * @param children - Conteúdo da página atual
+ * @returns Shell principal da aplicação
+ */
 export default function AppShell({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const isLogin = pathname === "/login";
-  const [isTransitioning, setIsTransitioning] = useState(false);
 
-  useEffect(() => {
-    setIsTransitioning(true);
-    const timer = setTimeout(() => setIsTransitioning(false), 300);
-    return () => clearTimeout(timer);
-  }, [pathname]);
-
+  // Se for a página de login, renderiza apenas o conteúdo (sem header)
   if (isLogin) {
     return <>{children}</>;
   }
 
   return (
     <div className="min-h-screen relative">
+      {/* Fundo animado com efeitos tecnológicos */}
       <AnimatedBackground />
-      <div className={`relative z-10 transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}>
+      
+      {/* Conteúdo principal acima do fundo */}
+      <div className="relative z-10">
+        {/* Header fixo no topo */}
         <header
           className="relative z-30 border-b backdrop-blur-md shadow-lg sm:fixed sm:inset-x-0 sm:top-0"
           style={{ background: "var(--header-bg)", borderColor: "var(--header-border)" }}
@@ -40,29 +51,31 @@ export default function AppShell({ children }: { children: ReactNode }) {
                 className="flex shrink-0 items-center gap-2 text-sm sm:text-base lg:text-lg font-display font-semibold tracking-tight"
                 style={{ color: "var(--header-text)" }}
               >
+                {/* Logo da aplicação */}
                 <Image
                   src="/assets/logo.png"
                   alt="Logo"
                   width={36}
                   height={36}
-                  className="h-9 w-9 shrink-0 sm:h-10 sm:w-10 lg:h-[42px] lg:w-[42px]"
+                  className="h-9 w-9 shrink-0 sm:h-10 sm:w-10 lg:h-[42px] lg:w-[42px] object-contain"
                   priority
                 />
+                {/* Título - oculto em telas pequenas */}
                 <span className="hidden sm:inline">Visor Integrado</span>
                 <span className="sm:hidden">Visor</span>
               </div>
 
-              {/* Menu central - apenas desktop */}
+              {/* Menu central - apenas desktop (oculto em mobile) */}
               <div className="hidden flex-1 items-center justify-center min-w-0 px-1 sm:px-2 lg:flex">
                 <Navbar />
               </div>
 
-              {/* Menu hamburger - apenas mobile */}
+              {/* Menu hamburger - apenas mobile (oculto em desktop) */}
               <div className="lg:hidden">
                 <MobileMenu />
               </div>
 
-              {/* Controles direito - simétrico */}
+              {/* Controles direito - toggle de tema e indicador de perfil */}
               <div className="flex shrink-0 items-center gap-2 sm:gap-3">
                 <ThemeToggle />
                 <RoleIndicator />
@@ -71,6 +84,7 @@ export default function AppShell({ children }: { children: ReactNode }) {
           </div>
         </header>
 
+        {/* Conteúdo principal da página */}
         <main className="min-h-screen pt-0 sm:pt-16 relative z-10">{children}</main>
       </div>
     </div>
