@@ -158,7 +158,7 @@ export default function RoleIndicator() {
       {/* Menu dropdown que aparece quando menuOpen é true */}
       {menuOpen && (
         <div
-          className="absolute right-0 mt-2 w-40 overflow-hidden rounded-xl border bg-white/90 text-sm shadow-xl"
+          className="absolute right-0 mt-2 w-40 overflow-hidden rounded-xl border bg-white/90 text-sm shadow-lg"
           style={{ borderColor: "var(--chip-border)" }}
         >
           {/* Link para configurações */}

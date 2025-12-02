@@ -41,14 +41,14 @@ export default function BlueMilkPage() {
     
     /**
      * Polling para detectar mudanças no mesmo tab
-     * Verifica a cada segundo se a URL mudou
+     * Verifica a cada 5 segundos se a URL mudou (otimizado para performance)
      */
     const interval = setInterval(() => {
       const current = getIframeUrl("bluemilk");
       if (current !== iframeUrl) {
         setIframeUrl(current);
       }
-    }, 1000);
+    }, 5000); // Intervalo aumentado para melhor performance
 
     // Limpa os listeners ao desmontar
     return () => {

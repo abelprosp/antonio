@@ -46,15 +46,15 @@ export default function DashboardPage() {
      * Polling para detectar mudanças no mesmo tab
      * 
      * Como o evento 'storage' não dispara na mesma aba,
-     * fazemos um polling a cada segundo para verificar
-     * se a URL mudou.
+     * fazemos um polling a cada 5 segundos para verificar
+     * se a URL mudou. Intervalo aumentado para melhor performance.
      */
     const interval = setInterval(() => {
       const current = getIframeUrl("dashboard");
       if (current !== iframeUrl) {
         setIframeUrl(current);
       }
-    }, 1000); // Verifica a cada 1 segundo
+    }, 5000); // Verifica a cada 5 segundos (otimizado para performance)
 
     // Limpa os listeners ao desmontar
     return () => {

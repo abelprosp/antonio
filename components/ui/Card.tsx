@@ -20,9 +20,10 @@ type CardProps = PropsWithChildren<{
  * @returns Componente de card estilizado
  */
 export default function Card({ children, className = "" }: CardProps) {
-  // Classes base do card: fundo, borda, sombra, bordas arredondadas, padding e transições
+  // Classes base do card: fundo, borda, sombra simplificada, bordas arredondadas, padding e transições
+  // Sombra simplificada para melhor performance em dispositivos fracos
   const base =
-    "bg-card border border-border/70 shadow-soft dark:shadow-soft-dark rounded-2xl p-6 transition-all duration-200 hover:shadow-lg hover:-translate-y-[1px]";
+    "bg-card border border-border/70 shadow-md rounded-2xl p-6 transition-all duration-200 hover:shadow-lg";
 
   return <div className={`${base} ${className}`}>{children}</div>;
 }

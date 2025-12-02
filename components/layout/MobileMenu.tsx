@@ -71,22 +71,22 @@ export default function MobileMenu() {
    */
   const menuContent = (
     <>
-      {/* Overlay escuro que aparece quando o menu está aberto */}
+      {/* Overlay escuro que aparece quando o menu está aberto - blur removido para performance */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-black/50 backdrop-blur-sm lg:hidden"
+          className="fixed inset-0 bg-black/60 lg:hidden"
           onClick={() => setIsOpen(false)} // Fecha o menu ao clicar no overlay
           style={{ position: "fixed", zIndex: 9998 }}
         />
       )}
 
-      {/* Menu drawer (gaveta lateral) */}
+      {/* Menu drawer (gaveta lateral) - backdrop-blur removido para melhor performance */}
       <aside
-        className={`fixed inset-y-0 left-0 w-64 flex flex-col border-r backdrop-blur-md shadow-2xl transition-transform duration-300 ease-in-out lg:hidden ${
+        className={`fixed inset-y-0 left-0 w-64 flex flex-col border-r shadow-lg transition-transform duration-300 ease-in-out lg:hidden ${
           isOpen ? "translate-x-0" : "-translate-x-full" // Desliza para dentro/fora
         }`}
         style={{
-          background: "var(--header-bg)",
+          background: "rgba(15, 23, 42, 0.98)", // Background sólido em vez de blur
           borderColor: "var(--header-border)",
           position: "fixed",
           zIndex: 9999, // Z-index alto para ficar acima de tudo

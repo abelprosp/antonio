@@ -5,7 +5,6 @@ import Navbar from "./Navbar";
 import MobileMenu from "./MobileMenu";
 import RoleIndicator from "./RoleIndicator";
 import ThemeToggle from "../ui/ThemeToggle";
-import AnimatedBackground from "../effects/AnimatedBackground";
 import Image from "next/image";
 import type { ReactNode } from "react";
 
@@ -14,9 +13,11 @@ import type { ReactNode } from "react";
  * 
  * Este componente é o container principal que envolve todas as páginas.
  * Ele fornece:
- * - Fundo animado
  * - Header com logo, navegação e controles
- * - Layout responsivo
+ * - Layout responsivo e leve (sem animações pesadas)
+ * 
+ * Nota: Animações foram removidas para melhorar performance em conexões lentas
+ * e dispositivos móveis.
  * 
  * Se a rota for /login, renderiza apenas o children (sem header).
  * 
@@ -34,15 +35,17 @@ export default function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="min-h-screen relative">
-      {/* Fundo animado com efeitos tecnológicos */}
-      <AnimatedBackground />
-      
-      {/* Conteúdo principal acima do fundo */}
+      {/* Conteúdo principal */}
       <div className="relative z-10">
-        {/* Header fixo no topo */}
+        {/* Header fixo no topo - backdrop-blur removido para melhor performance */}
         <header
-          className="relative z-30 border-b backdrop-blur-md shadow-lg sm:fixed sm:inset-x-0 sm:top-0"
-          style={{ background: "var(--header-bg)", borderColor: "var(--header-border)" }}
+          className="relative z-30 border-b shadow-md sm:fixed sm:inset-x-0 sm:top-0"
+          style={{ 
+            background: "var(--header-bg)", 
+            borderColor: "var(--header-border)",
+            // Aumenta opacidade do background para compensar remoção do blur
+            backgroundColor: "rgba(15, 23, 42, 0.95)"
+          }}
         >
           <div className="mx-auto max-w-7xl px-2 sm:px-4 lg:px-6">
             <div className="flex min-h-16 items-center justify-between gap-2 sm:gap-4">

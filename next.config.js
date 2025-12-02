@@ -1,5 +1,16 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  // Otimizações de imagem para melhor performance
+  images: {
+    // Formatos modernos e otimizados
+    formats: ['image/avif', 'image/webp'],
+    // Limite de tamanho para otimização automática
+    deviceSizes: [640, 750, 828, 1080, 1200],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    // Domínios permitidos para imagens externas (se necessário)
+    domains: [],
+  },
+  
   // Headers de segurança
   async headers() {
     return [
